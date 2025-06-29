@@ -4,8 +4,8 @@ import { PaymentService } from './services/payment.service';
 import { PayBillRequestDto } from './dto/pay-bill-request.dto';
 import { PayBillResponseDto } from './dto/pay-bill-response.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { MetricsService } from '../core/services/metrics.service';
-import { ErrorClassifier } from '../core/services/error-classifier';
+import { PaymentMetricsService } from './services/payment-metrics.service';
+import { PaymentErrorClassifier } from './services/payment-error-classifier';
 
 @ApiTags('Payments')
 @Controller('payments')
@@ -14,7 +14,7 @@ import { ErrorClassifier } from '../core/services/error-classifier';
 export class PaymentsController {
   constructor(
     private readonly paymentService: PaymentService,
-    private readonly metricsService: MetricsService,
+    private readonly metricsService: PaymentMetricsService,
   ) {}
 
   @Post('bill')
@@ -37,7 +37,7 @@ export class PaymentsController {
       return result;
     } catch (error) {
       const duration = Date.now() - startTime;
-      const errorType = ErrorClassifier.classifyError(error);
+      const errorType = PaymentErrorClassifier.classifyError(error);
       
       this.metricsService.recordPayment(req.user.providerId, 'error', 0, duration, errorType, instance);
       throw error;

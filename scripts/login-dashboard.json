@@ -1,0 +1,161 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "HubConductor - Login",
+    "tags": ["hubconductor", "login", "auth", "fintech"],
+    "style": "dark",
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Total de Logins por Provedor",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "login_total",
+            "legendFormat": "{{provider}} - {{status}}",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "displayMode": "list"
+            }
+          }
+        },
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0}
+      },
+      {
+        "id": 2,
+        "title": "Taxa de Sucesso de Login (%)",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "(sum(login_total{status=\"success\"}) / sum(login_total)) * 100",
+            "legendFormat": "Taxa de Sucesso",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "custom": {
+              "displayMode": "single-stat"
+            },
+            "unit": "percent",
+            "thresholds": {
+              "steps": [
+                {"color": "red", "value": 0},
+                {"color": "yellow", "value": 80},
+                {"color": "green", "value": 95}
+              ]
+            }
+          }
+        },
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0}
+      },
+      {
+        "id": 3,
+        "title": "Taxa de Logins por Minuto",
+        "type": "timeseries",
+        "targets": [
+          {
+            "expr": "rate(login_total[5m]) * 60",
+            "legendFormat": "{{provider}} - {{status}}",
+            "refId": "A"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Logins/min",
+            "unit": "reqps"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8}
+      },
+      {
+        "id": 4,
+        "title": "Tempo Médio de Login (95º percentil)",
+        "type": "timeseries",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(login_duration_seconds_bucket[5m]))",
+            "legendFormat": "{{provider}} - {{status}}",
+            "refId": "A"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Tempo (segundos)",
+            "unit": "s"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8}
+      },
+      {
+        "id": 5,
+        "title": "Erros de Login por Tipo",
+        "type": "piechart",
+        "targets": [
+          {
+            "expr": "login_total{status=\"error\"}",
+            "legendFormat": "{{error_type}}",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 16}
+      },
+      {
+        "id": 6,
+        "title": "Volume de Logins por Hora",
+        "type": "timeseries",
+        "targets": [
+          {
+            "expr": "increase(login_total[1h])",
+            "legendFormat": "{{provider}} - {{status}}",
+            "refId": "A"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Logins",
+            "unit": "short"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 16}
+      },
+      {
+        "id": 7,
+        "title": "Distribuição de Tempo de Login",
+        "type": "heatmap",
+        "targets": [
+          {
+            "expr": "sum(rate(login_duration_seconds_bucket[5m])) by (le)",
+            "legendFormat": "{{le}}",
+            "refId": "A"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Tempo (segundos)",
+            "unit": "s"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 24, "x": 0, "y": 24}
+      }
+    ],
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "refresh": "10s"
+  },
+  "folderId": 0,
+  "overwrite": true
+} 

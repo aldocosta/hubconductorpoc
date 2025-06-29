@@ -1,0 +1,135 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "HubConductor - Transferências",
+    "tags": ["hubconductor", "transfers", "fintech"],
+    "style": "dark",
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Total de Transferências por Provedor",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "transfers_total",
+            "legendFormat": "{{provider}} - {{status}}",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "displayMode": "list"
+            }
+          }
+        },
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0}
+      },
+      {
+        "id": 2,
+        "title": "Valor Total Transferido (R$)",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "transfers_amount_total / 100",
+            "legendFormat": "{{provider}} - R$ {{value}}",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "custom": {
+              "displayMode": "single-stat"
+            },
+            "unit": "currencyBRL"
+          }
+        },
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0}
+      },
+      {
+        "id": 3,
+        "title": "Taxa de Transferências por Minuto",
+        "type": "timeseries",
+        "targets": [
+          {
+            "expr": "rate(transfers_total[5m]) * 60",
+            "legendFormat": "{{provider}} - {{status}}",
+            "refId": "A"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Transferências/min",
+            "unit": "reqps"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8}
+      },
+      {
+        "id": 4,
+        "title": "Tempo Médio de Resposta (95º percentil)",
+        "type": "timeseries",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(transfer_duration_seconds_bucket[5m]))",
+            "legendFormat": "{{provider}} - {{status}}",
+            "refId": "A"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Tempo (segundos)",
+            "unit": "s"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8}
+      },
+      {
+        "id": 5,
+        "title": "Erros por Tipo",
+        "type": "piechart",
+        "targets": [
+          {
+            "expr": "transfers_total{status=\"error\"}",
+            "legendFormat": "{{error_type}}",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 16}
+      },
+      {
+        "id": 6,
+        "title": "Volume de Transferências por Hora",
+        "type": "timeseries",
+        "targets": [
+          {
+            "expr": "increase(transfers_total[1h])",
+            "legendFormat": "{{provider}} - {{status}}",
+            "refId": "A"
+          }
+        ],
+        "yAxes": [
+          {
+            "label": "Transferências",
+            "unit": "short"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 16}
+      }
+    ],
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "refresh": "10s"
+  },
+  "folderId": 0,
+  "overwrite": true
+} 

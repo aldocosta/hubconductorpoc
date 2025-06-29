@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Counter, Histogram } from 'prom-client';
 
 @Injectable()
-export class MetricsService {
+export class PaymentMetricsService {
   private paymentCounter = new Counter({
     name: 'payments_total',
     help: 'Total de pagamentos',

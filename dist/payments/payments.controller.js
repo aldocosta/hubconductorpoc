@@ -19,8 +19,8 @@ const payment_service_1 = require("./services/payment.service");
 const pay_bill_request_dto_1 = require("./dto/pay-bill-request.dto");
 const pay_bill_response_dto_1 = require("./dto/pay-bill-response.dto");
 const jwt_auth_guard_1 = require("../auth/guards/jwt-auth.guard");
-const metrics_service_1 = require("../core/services/metrics.service");
-const error_classifier_1 = require("../core/services/error-classifier");
+const payment_metrics_service_1 = require("./services/payment-metrics.service");
+const payment_error_classifier_1 = require("./services/payment-error-classifier");
 let PaymentsController = class PaymentsController {
     constructor(paymentService, metricsService) {
         this.paymentService = paymentService;
@@ -38,7 +38,7 @@ let PaymentsController = class PaymentsController {
         }
         catch (error) {
             const duration = Date.now() - startTime;
-            const errorType = error_classifier_1.ErrorClassifier.classifyError(error);
+            const errorType = payment_error_classifier_1.PaymentErrorClassifier.classifyError(error);
             this.metricsService.recordPayment(req.user.providerId, 'error', 0, duration, errorType, instance);
             throw error;
         }
@@ -61,6 +61,6 @@ exports.PaymentsController = PaymentsController = __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, swagger_1.ApiBearerAuth)(),
     __metadata("design:paramtypes", [payment_service_1.PaymentService,
-        metrics_service_1.MetricsService])
+        payment_metrics_service_1.PaymentMetricsService])
 ], PaymentsController);
 //# sourceMappingURL=payments.controller.js.map

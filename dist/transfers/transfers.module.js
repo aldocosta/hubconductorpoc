@@ -11,18 +11,18 @@ const common_1 = require("@nestjs/common");
 const transfers_controller_1 = require("./transfers.controller");
 const doc_service_1 = require("./services/doc.service");
 const doc_provider_factory_1 = require("./services/doc-provider.factory");
+const transfer_metrics_service_1 = require("./services/transfer-metrics.service");
 const dock_module_1 = require("../dock/dock.module");
 const provedor_x_module_1 = require("../provedor-x/provedor-x.module");
 const auth_module_1 = require("../auth/auth.module");
-const core_module_1 = require("../core/core.module");
 let TransfersModule = class TransfersModule {
 };
 exports.TransfersModule = TransfersModule;
 exports.TransfersModule = TransfersModule = __decorate([
     (0, common_1.Module)({
-        imports: [dock_module_1.DockModule, provedor_x_module_1.ProvedorXModule, auth_module_1.AuthModule, core_module_1.CoreModule],
+        imports: [dock_module_1.DockModule, provedor_x_module_1.ProvedorXModule, auth_module_1.AuthModule],
         controllers: [transfers_controller_1.TransfersController],
-        providers: [doc_service_1.DocService, doc_provider_factory_1.DocProviderFactory],
+        providers: [doc_service_1.DocService, doc_provider_factory_1.DocProviderFactory, transfer_metrics_service_1.TransferMetricsService],
     })
 ], TransfersModule);
 //# sourceMappingURL=transfers.module.js.map
