@@ -13,17 +13,39 @@ Documentação completa da arquitetura atual do projeto, incluindo:
 - Tecnologias utilizadas
 - Próximos passos
 
+### 🛡️ [ratelimit.md](./ratelimit.md)
+Análise completa sobre Rate Limiting, incluindo:
+- Conceitos e objetivos do Rate Limiting
+- Comparação entre implementação em infraestrutura vs aplicação
+- Implementação detalhada no NestJS
+- Configurações avançadas para HubConductor
+- Abordagem híbrida recomendada
+- Benefícios para sistemas financeiros
+
+### 📊 [observability.md](./observability.md)
+Guia completo sobre Observability, incluindo:
+- Conceitos dos três pilares (Métricas, Logs, Traces)
+- Implementação detalhada do Pilar 1 (Métricas) com Docker
+- Configuração Prometheus + Grafana
+- Dashboards práticos para HubConductor
+- ROI e benefícios para sistemas financeiros
+- Próximos passos para Logs e Traces
+
 ## Como Usar Esta Documentação
 
 ### Para Desenvolvedores
 1. **Leia `architecture.md`** para entender a arquitetura atual
-2. **Siga os "Próximos Passos"** para implementar melhorias
-3. **Use como referência** para novas implementações
+2. **Consulte `ratelimit.md`** para implementar proteções de segurança
+3. **Siga `observability.md`** para implementar monitoramento
+4. **Siga os "Próximos Passos"** para implementar melhorias
+5. **Use como referência** para novas implementações
 
 ### Para IAs
 1. **Analise `architecture.md`** para entender o contexto
-2. **Siga os padrões estabelecidos** para novas funcionalidades
-3. **Mantenha a documentação atualizada** conforme mudanças
+2. **Consulte `ratelimit.md`** para implementar segurança
+3. **Siga `observability.md`** para implementar monitoramento
+4. **Siga os padrões estabelecidos** para novas funcionalidades
+5. **Mantenha a documentação atualizada** conforme mudanças
 
 ## Convenções de Documentação
 
@@ -49,4 +71,8 @@ Documentação completa da arquitetura atual do projeto, incluindo:
 - [ ] `deployment-guide.md` - Guia de deploy e configuração
 - [ ] `testing-strategy.md` - Estratégia de testes
 - [ ] `security-guidelines.md` - Diretrizes de segurança
-- [ ] `performance-optimization.md` - Otimizações de performance 
+- [ ] `performance-optimization.md` - Otimizações de performance
+- [ ] `health-checks.md` - Implementação de Health Checks
+- [ ] `logging-strategy.md` - Estratégia de logging (Pilar 2)
+- [ ] `tracing-strategy.md` - Estratégia de tracing (Pilar 3)
+- [ ] `exception-handling.md` - Tratamento de exceções 
