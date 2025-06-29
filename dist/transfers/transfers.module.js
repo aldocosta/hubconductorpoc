@@ -14,12 +14,13 @@ const doc_provider_factory_1 = require("./services/doc-provider.factory");
 const dock_module_1 = require("../dock/dock.module");
 const provedor_x_module_1 = require("../provedor-x/provedor-x.module");
 const auth_module_1 = require("../auth/auth.module");
+const core_module_1 = require("../core/core.module");
 let TransfersModule = class TransfersModule {
 };
 exports.TransfersModule = TransfersModule;
 exports.TransfersModule = TransfersModule = __decorate([
     (0, common_1.Module)({
-        imports: [dock_module_1.DockModule, provedor_x_module_1.ProvedorXModule, auth_module_1.AuthModule],
+        imports: [dock_module_1.DockModule, provedor_x_module_1.ProvedorXModule, auth_module_1.AuthModule, core_module_1.CoreModule],
         controllers: [transfers_controller_1.TransfersController],
         providers: [doc_service_1.DocService, doc_provider_factory_1.DocProviderFactory],
     })

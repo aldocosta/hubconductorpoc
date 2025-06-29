@@ -2,9 +2,13 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { HttpExceptionFilter } from './core/filters/http-exception.filter';
+import { LoggerService } from './core/services/logger.service';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: new LoggerService(),
+  });
 
   // Configuração de validação global
   app.useGlobalPipes(new ValidationPipe({
@@ -12,6 +16,9 @@ async function bootstrap() {
     forbidNonWhitelisted: true,
     transform: true,
   }));
+
+  // Filtro global de exceção
+  app.useGlobalFilters(new HttpExceptionFilter());
 
   // Configuração do CORS
   app.enableCors();

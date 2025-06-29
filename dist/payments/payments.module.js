@@ -14,12 +14,13 @@ const payment_provider_factory_1 = require("./services/payment-provider.factory"
 const dock_module_1 = require("../dock/dock.module");
 const provedor_x_module_1 = require("../provedor-x/provedor-x.module");
 const auth_module_1 = require("../auth/auth.module");
+const core_module_1 = require("../core/core.module");
 let PaymentsModule = class PaymentsModule {
 };
 exports.PaymentsModule = PaymentsModule;
 exports.PaymentsModule = PaymentsModule = __decorate([
     (0, common_1.Module)({
-        imports: [dock_module_1.DockModule, provedor_x_module_1.ProvedorXModule, auth_module_1.AuthModule],
+        imports: [dock_module_1.DockModule, provedor_x_module_1.ProvedorXModule, auth_module_1.AuthModule, core_module_1.CoreModule],
         controllers: [payments_controller_1.PaymentsController],
         providers: [payment_service_1.PaymentService, payment_provider_factory_1.PaymentProviderFactory],
     })

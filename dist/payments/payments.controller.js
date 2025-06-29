@@ -18,23 +18,35 @@ const swagger_1 = require("@nestjs/swagger");
 const payment_service_1 = require("./services/payment.service");
 const pay_bill_request_dto_1 = require("./dto/pay-bill-request.dto");
 const pay_bill_response_dto_1 = require("./dto/pay-bill-response.dto");
-const jwt_service_1 = require("../core/services/jwt.service");
+const jwt_auth_guard_1 = require("../auth/guards/jwt-auth.guard");
+const metrics_service_1 = require("../core/services/metrics.service");
+const error_classifier_1 = require("../core/services/error-classifier");
 let PaymentsController = class PaymentsController {
-    constructor(paymentService, jwtService) {
+    constructor(paymentService, metricsService) {
         this.paymentService = paymentService;
-        this.jwtService = jwtService;
+        this.metricsService = metricsService;
     }
     async payBill(data, req) {
-        const token = req.headers.authorization?.replace('Bearer ', '');
-        const payload = this.jwtService.verifyToken(token);
-        const providerId = payload.providerId;
-        return this.paymentService.payBill(data, providerId);
+        const startTime = Date.now();
+        const amount = data.amount || 0;
+        const instance = process.env.INSTANCE_NAME || 'monolith';
+        try {
+            const result = await this.paymentService.payBill(data, req.user.providerId);
+            const duration = Date.now() - startTime;
+            this.metricsService.recordPayment(req.user.providerId, 'success', amount, duration, undefined, instance);
+            return result;
+        }
+        catch (error) {
+            const duration = Date.now() - startTime;
+            const errorType = error_classifier_1.ErrorClassifier.classifyError(error);
+            this.metricsService.recordPayment(req.user.providerId, 'error', 0, duration, errorType, instance);
+            throw error;
+        }
     }
 };
 exports.PaymentsController = PaymentsController;
 __decorate([
     (0, common_1.Post)('bill'),
-    (0, swagger_1.ApiBearerAuth)(),
     (0, swagger_1.ApiOperation)({ summary: 'Pagar boleto' }),
     (0, swagger_1.ApiResponse)({ status: 201, description: 'Boleto pago com sucesso', type: pay_bill_response_dto_1.PayBillResponseDto }),
     __param(0, (0, common_1.Body)()),
@@ -46,7 +58,9 @@ __decorate([
 exports.PaymentsController = PaymentsController = __decorate([
     (0, swagger_1.ApiTags)('Payments'),
     (0, common_1.Controller)('payments'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, swagger_1.ApiBearerAuth)(),
     __metadata("design:paramtypes", [payment_service_1.PaymentService,
-        jwt_service_1.JwtService])
+        metrics_service_1.MetricsService])
 ], PaymentsController);
 //# sourceMappingURL=payments.controller.js.map

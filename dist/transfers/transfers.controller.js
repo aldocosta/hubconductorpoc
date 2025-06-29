@@ -18,23 +18,19 @@ const swagger_1 = require("@nestjs/swagger");
 const doc_service_1 = require("./services/doc.service");
 const doc_transfer_request_dto_1 = require("./dto/doc-transfer-request.dto");
 const doc_transfer_response_dto_1 = require("./dto/doc-transfer-response.dto");
-const jwt_service_1 = require("../core/services/jwt.service");
+const jwt_auth_guard_1 = require("../auth/guards/jwt-auth.guard");
 let TransfersController = class TransfersController {
-    constructor(docService, jwtService) {
+    constructor(docService) {
         this.docService = docService;
-        this.jwtService = jwtService;
     }
     async transferDoc(data, req) {
-        const token = req.headers.authorization?.replace('Bearer ', '');
-        const payload = this.jwtService.verifyToken(token);
-        const providerId = payload.providerId;
+        const providerId = req.user.providerId;
         return this.docService.transferDoc(data, providerId);
     }
 };
 exports.TransfersController = TransfersController;
 __decorate([
     (0, common_1.Post)('doc'),
-    (0, swagger_1.ApiBearerAuth)(),
     (0, swagger_1.ApiOperation)({ summary: 'Realizar transferência DOC' }),
     (0, swagger_1.ApiResponse)({ status: 201, description: 'Transferência DOC realizada com sucesso', type: doc_transfer_response_dto_1.DocTransferResponseDto }),
     __param(0, (0, common_1.Body)()),
@@ -46,7 +42,8 @@ __decorate([
 exports.TransfersController = TransfersController = __decorate([
     (0, swagger_1.ApiTags)('Transfers'),
     (0, common_1.Controller)('transfers'),
-    __metadata("design:paramtypes", [doc_service_1.DocService,
-        jwt_service_1.JwtService])
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, swagger_1.ApiBearerAuth)(),
+    __metadata("design:paramtypes", [doc_service_1.DocService])
 ], TransfersController);
 //# sourceMappingURL=transfers.controller.js.map

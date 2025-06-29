@@ -14,6 +14,7 @@ const database_module_1 = require("./database/database.module");
 const auth_module_1 = require("./auth/auth.module");
 const payments_module_1 = require("./payments/payments.module");
 const transfers_module_1 = require("./transfers/transfers.module");
+const health_module_1 = require("./health/health.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -26,6 +27,7 @@ exports.AppModule = AppModule = __decorate([
             auth_module_1.AuthModule,
             payments_module_1.PaymentsModule,
             transfers_module_1.TransfersModule,
+            health_module_1.HealthModule,
         ],
     })
 ], AppModule);

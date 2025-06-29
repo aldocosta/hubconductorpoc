@@ -6,6 +6,7 @@ import { PayBillResponseDto } from '../payments/dto/pay-bill-response.dto';
 @Injectable()
 export class ProvedorXPaymentProviderService implements IPaymentProvider {
   async payBill(data: PayBillRequestDto): Promise<PayBillResponseDto> {
+    
     // Simulação de validação de valor mínimo
     if (data.amount < 1000) { // R$ 10,00
       return {

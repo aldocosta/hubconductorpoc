@@ -9,15 +9,15 @@ Observability permite **ver o que está acontecendo** no sistema em tempo real.
 - **Dashboard**: Visualização em tempo real
 - **Alertas**: Detectar problemas rapidamente
 
-## Implementação Rápida
+## Implementação no Código
 
-### 1. Instalar Dependências
+### 1. Dependências (já instaladas)
 
 ```bash
-npm install prom-client @nestjs/prometheus
+npm install prom-client
 ```
 
-### 2. Criar Métricas Simples
+### 2. Métricas Service (já implementado)
 
 ```typescript
 // src/core/services/metrics.service.ts
@@ -61,7 +61,7 @@ export class MetricsService {
 }
 ```
 
-### 3. Classificar Erros Simples
+### 3. Error Classifier (já implementado)
 
 ```typescript
 // src/core/services/error-classifier.ts
@@ -88,7 +88,7 @@ export class ErrorClassifier {
 }
 ```
 
-### 4. Integrar no Controller
+### 4. Integração nos Controllers (já implementado)
 
 ```typescript
 // src/payments/payments.controller.ts
@@ -126,227 +126,33 @@ export class PaymentsController {
 }
 ```
 
-### 5. Atualizar CoreModule
+### 5. Health Controller (já implementado)
 
 ```typescript
-// src/core/core.module.ts
-import { Module } from '@nestjs/common';
-import { PrometheusModule } from '@nestjs/prometheus';
-import { MetricsService } from './services/metrics.service';
+// src/health/health.controller.ts
+import { Controller, Get, Res } from '@nestjs/common';
+import { Response } from 'express';
+import { register } from 'prom-client';
 
-@Module({
-  imports: [
-    PrometheusModule.register({
-      path: '/metrics',
-      defaultMetrics: { enabled: true },
-    }),
-  ],
-  providers: [MetricsService],
-  exports: [MetricsService],
-})
-export class CoreModule {}
+@Controller('health')
+export class HealthController {
+  @Get()
+  check() {
+    return {
+      status: 'ok',
+      timestamp: new Date().toISOString(),
+    };
+  }
+
+  @Get('metrics')
+  async getMetrics(@Res() res: Response) {
+    res.set('Content-Type', register.contentType);
+    res.end(await register.metrics());
+  }
+}
 ```
 
-## Bootstrap Modular - Observabilidade
-
-### Cenário: Módulos Rodando Separadamente
-
-Quando você executa módulos independentemente (ex: `payments.bootstrap.ts`), cada instância roda em uma porta diferente:
-
-- **Monolito**: Porta 3000
-- **Payments**: Porta 3001  
-- **Transfers**: Porta 3002
-
-### Solução: Prometheus com Múltiplos Targets
-
-```yaml
-# prometheus.yml
-global:
-  scrape_interval: 15s
-
-scrape_configs:
-  - job_name: 'hubconductor-monolith'
-    static_configs:
-      - targets: ['hubconductor:3000']
-    metrics_path: '/metrics'
-    scrape_interval: 30s
-
-  - job_name: 'hubconductor-payments'
-    static_configs:
-      - targets: ['payments:3001']
-    metrics_path: '/metrics'
-    scrape_interval: 30s
-
-  - job_name: 'hubconductor-transfers'
-    static_configs:
-      - targets: ['transfers:3002']
-    metrics_path: '/metrics'
-    scrape_interval: 30s
-```
-
-### Docker Compose para Bootstrap Modular
-
-```yaml
-# docker-compose.modular.yml
-version: '3.8'
-
-services:
-  # Monolito completo
-  hubconductor:
-    build: .
-    ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=development
-      - INSTANCE_NAME=monolith
-    restart: unless-stopped
-    networks:
-      - monitoring
-
-  # Módulo de pagamentos isolado
-  payments:
-    build: .
-    ports:
-      - "3001:3001"
-    environment:
-      - NODE_ENV=development
-      - INSTANCE_NAME=payments
-    command: ["npm", "run", "start:payments"]
-    restart: unless-stopped
-    networks:
-      - monitoring
-
-  # Módulo de transferências isolado
-  transfers:
-    build: .
-    ports:
-      - "3002:3002"
-    environment:
-      - NODE_ENV=development
-      - INSTANCE_NAME=transfers
-    command: ["npm", "run", "start:transfers"]
-    restart: unless-stopped
-    networks:
-      - monitoring
-
-  # Prometheus para múltiplas instâncias
-  prometheus:
-    image: prom/prometheus:latest
-    ports:
-      - "9090:9090"
-    volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
-    restart: unless-stopped
-    networks:
-      - monitoring
-
-  # Grafana com múltiplos data sources
-  grafana:
-    image: grafana/grafana:latest
-    ports:
-      - "3003:3000"
-    environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin123
-      - GF_SECURITY_ADMIN_USER=admin
-    volumes:
-      - grafana_data:/var/lib/grafana
-      - ./grafana/provisioning:/etc/grafana/provisioning
-    restart: unless-stopped
-    networks:
-      - monitoring
-
-volumes:
-  grafana_data:
-
-networks:
-  monitoring:
-    driver: bridge
-```
-
-### Grafana com Múltiplos Data Sources
-
-O Grafana **suporta múltiplos data sources** nativamente. Você pode:
-
-1. **Data Source Único**: Um Prometheus que coleta de todos os targets
-2. **Data Sources Separados**: Um Prometheus por instância
-
-#### Opção 1: Data Source Único (Recomendado)
-
-```yaml
-# grafana/provisioning/datasources/prometheus.yml
-apiVersion: 1
-
-datasources:
-  - name: Prometheus
-    type: prometheus
-    access: proxy
-    url: http://prometheus:9090
-    isDefault: true
-```
-
-#### Opção 2: Data Sources Separados
-
-```yaml
-# grafana/provisioning/datasources/datasources.yml
-apiVersion: 1
-
-datasources:
-  - name: Monolith
-    type: prometheus
-    access: proxy
-    url: http://hubconductor:3000
-    isDefault: true
-
-  - name: Payments
-    type: prometheus
-    access: proxy
-    url: http://payments:3001
-
-  - name: Transfers
-    type: prometheus
-    access: proxy
-    url: http://transfers:3002
-```
-
-### Queries para Múltiplas Instâncias
-
-```promql
-# Total de pagamentos por instância
-sum by (instance) (payments_total)
-
-# Valor transacionado por instância
-sum by (instance) (payments_amount_total{status="success"})
-
-# Taxa de erro por instância
-rate(payments_total{status="error"}[5m])
-
-# Comparar performance entre instâncias
-histogram_quantile(0.95, rate(payment_duration_seconds_bucket[5m]))
-```
-
-### Dashboard com Múltiplas Instâncias
-
-**Painel 1: Total por Instância**
-```
-Query: sum by (instance) (payments_total)
-```
-
-**Painel 2: Valor por Instância**
-```
-Query: sum by (instance) (payments_amount_total{status="success"})
-```
-
-**Painel 3: Taxa de Erro por Instância**
-```
-Query: rate(payments_total{status="error"}[5m])
-```
-
-**Painel 4: Performance por Instância**
-```
-Query: histogram_quantile(0.95, rate(payment_duration_seconds_bucket[5m]))
-```
-
-## Setup Docker Simples
+## Setup Docker
 
 ### 1. Docker Compose
 
@@ -361,6 +167,23 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=development
+    restart: unless-stopped
+    networks:
+      - monitoring
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
     restart: unless-stopped
     networks:
       - monitoring
@@ -386,20 +209,24 @@ networks:
     driver: bridge
 ```
 
-### 2. Dockerfile
+### 2. Prometheus Configuration
 
-```dockerfile
-# Dockerfile
-FROM node:18-alpine
+```yaml
+# prometheus.yml
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
 
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci
-COPY . .
-RUN npm run build
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
 
-EXPOSE 3000
-CMD ["npm", "run", "start:dev"]
+scrape_configs:
+  - job_name: 'hubconductor'
+    static_configs:
+      - targets: ['hubconductor:3000']
+    metrics_path: '/health/metrics'
+    scrape_interval: 5s
 ```
 
 ### 3. Subir
@@ -420,10 +247,22 @@ Senha: admin123
 ### 2. Adicionar Prometheus
 1. Settings → Data Sources
 2. Add data source → Prometheus
-3. URL: `http://hubconductor:3000`
+3. URL: `do`
 4. Save & Test
 
-### 3. Criar Dashboard Simples
+### 3. Importar Dashboard
+
+O projeto já inclui um dashboard configurado em `grafana/dashboards/hubconductor-dashboard.json`.
+
+Para importar:
+1. Dashboards → Import
+2. Upload JSON file
+3. Selecionar o arquivo `grafana/dashboards/hubconductor-dashboard.json`
+4. Import
+
+### 4. Dashboard Incluído
+
+O dashboard já configurado inclui:
 
 **Painel 1: Total de Pagamentos**
 ```
@@ -454,19 +293,29 @@ Query: histogram_quantile(0.95, rate(payment_duration_seconds_bucket[5m]))
 
 ### 1. Verificar Métricas
 ```bash
-curl http://localhost:3000/metrics
+curl http://localhost:3000/health/metrics
 ```
 
-### 2. Fazer Pagamentos
+### 2. Verificar Prometheus
 ```bash
-# Fazer alguns pagamentos via API
+curl http://localhost:9090/api/v1/targets
+```
+
+### 3. Fazer Pagamentos
+```bash
+# Login
+curl -X POST http://localhost:3000/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email": "admin", "password": "admin123", "providerId": "provedorx"}'
+
+# Pagamento
 curl -X POST http://localhost:3000/payments/bill \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
-  -d '{"amount": 100.50, "billCode": "123456"}'
+  -d '{"barcode": "12345678901234567890123456789012345678901234", "amount": 15000, "dueDate": "2024-12-31", "payerDocument": "12345678901", "payerName": "João Silva"}'
 ```
 
-### 3. Ver Dashboard
+### 4. Ver Dashboard
 - Acessar http://localhost:3001
 - Ver métricas em tempo real
 
@@ -481,6 +330,9 @@ docker-compose down
 
 # Rebuild
 docker-compose up -d --build
+
+# Verificar containers
+docker-compose ps
 ```
 
 ## O que Você Vê
@@ -488,14 +340,13 @@ docker-compose up -d --build
 ### Métricas Básicas
 ```bash
 # Total de pagamentos
-payments_total{provider="dock",status="success",instance="monolith"} 150
-payments_total{provider="dock",status="error",error_type="business_error",instance="payments"} 5
+payments_total{provider="provedorx",status="success",instance="monolith"} 2
 
 # Valor transacionado
-payments_amount_total{provider="dock",status="success",instance="monolith"} 15000.50
+payments_amount_total{provider="provedorx",status="success",instance="monolith"} 40000
 
 # Tempo de resposta
-payment_duration_seconds{provider="dock",status="success",instance="payments"} 0.5
+payment_duration_seconds{provider="provedorx",status="success",instance="monolith"} 0.5
 ```
 
 ### Queries Úteis
@@ -537,10 +388,10 @@ sum by (instance) (payments_total)
 
 ## Próximos Passos
 
-1. **Implementar métricas** no código
-2. **Subir containers** com Docker
-3. **Configurar dashboard** no Grafana
-4. **Testar** com algumas transações
-5. **Demonstrar** em tempo real
+1. ✅ **Implementar métricas** no código
+2. ✅ **Subir containers** com Docker
+3. ✅ **Configurar dashboard** no Grafana
+4. ✅ **Testar** com algumas transações
+5. ✅ **Demonstrar** em tempo real
 
-**Resultado:** POC com observabilidade funcional em 30 minutos! 
+**Resultado:** POC com observabilidade funcional! 🚀 
