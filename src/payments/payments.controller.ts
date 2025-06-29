@@ -1,8 +1,8 @@
 import { Controller, Post, Body, Req } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { PaymentService } from './services/payment.service';
-import { PayBillRequestDto } from '../core/dto/pay-bill-request.dto';
-import { PayBillResponseDto } from '../core/dto/pay-bill-response.dto';
+import { PayBillRequestDto } from './dto/pay-bill-request.dto';
+import { PayBillResponseDto } from './dto/pay-bill-response.dto';
 import { JwtService } from '../core/services/jwt.service';
 
 @ApiTags('Payments')

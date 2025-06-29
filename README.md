@@ -7,8 +7,8 @@ Prova de conceito de um monolito modular em NestJS, focado em demonstrar a arqui
 ### Módulos
 
 - **AppModule**: Módulo principal que orquestra todos os outros módulos
-- **CoreModule**: Módulo compartilhado com interfaces e DTOs genéricos
-- **AuthModule**: Módulo de autenticação com login simulado
+- **CoreModule**: Módulo compartilhado com interfaces (sem DTOs específicos)
+- **AuthModule**: Módulo de autenticação com login simulado e JwtService
 - **PaymentsModule**: Módulo de pagamentos (apenas boletos)
 - **TransfersModule**: Módulo de transferências bancárias (DOC)
 - **DockModule**: Provedor de pagamento e DOC mockado da Dock
@@ -55,13 +55,13 @@ npm run start:prod
 Realizar login e selecionar provedor de pagamento.
 
 **Credenciais de teste:**
-- Email: `admin@hubconductor.com`
+- Email: `admin`
 - Senha: `admin123`
 
 **Exemplo de requisição:**
 ```json
 {
-  "email": "admin@hubconductor.com",
+  "email": "admin",
   "password": "admin123",
   "providerId": "dock"
 }
@@ -69,7 +69,7 @@ Realizar login e selecionar provedor de pagamento.
 
 **Provedores disponíveis:**
 - `dock`: Provedor Dock (boleto: limite R$ 500, DOC: limite R$ 1000)
-- `provedor_x`: ProvedorX (boleto: mínimo R$ 10, DOC: mínimo R$ 50 + horário comercial)
+- `provedorx`: ProvedorX (boleto: mínimo R$ 10, DOC: mínimo R$ 50 + horário comercial)
 
 ### Pagamentos
 
@@ -144,25 +144,17 @@ Ambos implementam a interface `IDatabaseService` com operações CRUD básicas.
 src/
 ├── auth/                    # Módulo de autenticação
 │   ├── dto/
+│   │   ├── login-request.dto.ts
+│   │   └── login-response.dto.ts
+│   ├── services/
+│   │   └── jwt.service.ts   # Serviço JWT movido para cá
 │   ├── auth.controller.ts
 │   ├── auth.service.ts
 │   └── auth.module.ts
-├── core/                    # Módulo compartilhado
-│   ├── dto/
-│   │   ├── pay-bill-request.dto.ts
-│   │   ├── pay-bill-response.dto.ts
-│   │   ├── doc-transfer-request.dto.ts
-│   │   └── doc-transfer-response.dto.ts
+├── core/                    # Módulo compartilhado (apenas interfaces)
 │   ├── interfaces/
 │   │   ├── payment-provider.interface.ts
-│   │   ├── doc-provider.interface.ts
-│   │   └── database-service.interface.ts
-│   ├── services/
-│   │   ├── payment.service.ts
-│   │   ├── doc.service.ts
-│   │   ├── payment-provider.factory.ts
-│   │   ├── doc-provider.factory.ts
-│   │   └── jwt.service.ts
+│   │   └── doc-provider.interface.ts
 │   └── core.module.ts
 ├── database/                # Módulo de banco de dados
 │   ├── interfaces/
@@ -173,9 +165,22 @@ src/
 │   ├── dock-doc-provider.service.ts
 │   └── dock.module.ts
 ├── payments/                # Módulo de pagamentos (boletos)
+│   ├── dto/                 # DTOs específicos do domínio
+│   │   ├── pay-bill-request.dto.ts
+│   │   └── pay-bill-response.dto.ts
+│   ├── services/
+│   │   ├── payment.service.ts
+│   │   └── payment-provider.factory.ts
 │   ├── payments.controller.ts
-│   └── payments.module.ts
+│   ├── payments.module.ts
+│   └── payments.bootstrap.ts
 ├── transfers/               # Módulo de transferências (DOC)
+│   ├── dto/                 # DTOs específicos do domínio
+│   │   ├── doc-transfer-request.dto.ts
+│   │   └── doc-transfer-response.dto.ts
+│   ├── services/
+│   │   ├── doc.service.ts
+│   │   └── doc-provider.factory.ts
 │   ├── transfers.controller.ts
 │   └── transfers.module.ts
 ├── provedor-x/              # ProvedorX
@@ -193,7 +198,7 @@ src/
 curl -X POST http://localhost:3000/auth/login \
   -H "Content-Type: application/json" \
   -d '{
-    "email": "admin@hubconductor.com",
+    "email": "admin",
     "password": "admin123",
     "providerId": "dock"
   }'

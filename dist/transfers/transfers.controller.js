@@ -16,8 +16,8 @@ exports.TransfersController = void 0;
 const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
 const doc_service_1 = require("./services/doc.service");
-const doc_transfer_request_dto_1 = require("../core/dto/doc-transfer-request.dto");
-const doc_transfer_response_dto_1 = require("../core/dto/doc-transfer-response.dto");
+const doc_transfer_request_dto_1 = require("./dto/doc-transfer-request.dto");
+const doc_transfer_response_dto_1 = require("./dto/doc-transfer-response.dto");
 const jwt_service_1 = require("../core/services/jwt.service");
 let TransfersController = class TransfersController {
     constructor(docService, jwtService) {

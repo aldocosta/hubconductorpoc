@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DocProviderFactory } from './doc-provider.factory';
-import { DocTransferRequestDto } from '../../core/dto/doc-transfer-request.dto';
-import { DocTransferResponseDto } from '../../core/dto/doc-transfer-response.dto';
+import { DocTransferRequestDto } from '../dto/doc-transfer-request.dto';
+import { DocTransferResponseDto } from '../dto/doc-transfer-response.dto';
 
 @Injectable()
 export class DocService {

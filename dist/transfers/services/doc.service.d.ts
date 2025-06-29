@@ -1,6 +1,6 @@
 import { DocProviderFactory } from './doc-provider.factory';
-import { DocTransferRequestDto } from '../../core/dto/doc-transfer-request.dto';
-import { DocTransferResponseDto } from '../../core/dto/doc-transfer-response.dto';
+import { DocTransferRequestDto } from '../dto/doc-transfer-request.dto';
+import { DocTransferResponseDto } from '../dto/doc-transfer-response.dto';
 export declare class DocService {
     private readonly docProviderFactory;
     constructor(docProviderFactory: DocProviderFactory);

@@ -16,8 +16,8 @@ exports.PaymentsController = void 0;
 const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
 const payment_service_1 = require("./services/payment.service");
-const pay_bill_request_dto_1 = require("../core/dto/pay-bill-request.dto");
-const pay_bill_response_dto_1 = require("../core/dto/pay-bill-response.dto");
+const pay_bill_request_dto_1 = require("./dto/pay-bill-request.dto");
+const pay_bill_response_dto_1 = require("./dto/pay-bill-response.dto");
 const jwt_service_1 = require("../core/services/jwt.service");
 let PaymentsController = class PaymentsController {
     constructor(paymentService, jwtService) {

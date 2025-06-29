@@ -1,6 +1,6 @@
 import { PaymentProviderFactory } from './payment-provider.factory';
-import { PayBillRequestDto } from '../../core/dto/pay-bill-request.dto';
-import { PayBillResponseDto } from '../../core/dto/pay-bill-response.dto';
+import { PayBillRequestDto } from '../dto/pay-bill-request.dto';
+import { PayBillResponseDto } from '../dto/pay-bill-response.dto';
 export declare class PaymentService {
     private readonly providerFactory;
     constructor(providerFactory: PaymentProviderFactory);

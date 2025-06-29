@@ -8,14 +8,13 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CoreModule = void 0;
 const common_1 = require("@nestjs/common");
-const jwt_service_1 = require("./services/jwt.service");
 let CoreModule = class CoreModule {
 };
 exports.CoreModule = CoreModule;
 exports.CoreModule = CoreModule = __decorate([
     (0, common_1.Module)({
-        providers: [jwt_service_1.JwtService],
-        exports: [jwt_service_1.JwtService],
+        providers: [],
+        exports: [],
     })
 ], CoreModule);
 //# sourceMappingURL=core.module.js.map

@@ -8,11 +8,11 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
-const core_module_1 = require("./core/core.module");
 const dock_module_1 = require("./dock/dock.module");
 const provedor_x_module_1 = require("./provedor-x/provedor-x.module");
 const database_module_1 = require("./database/database.module");
 const auth_module_1 = require("./auth/auth.module");
+const payments_module_1 = require("./payments/payments.module");
 const transfers_module_1 = require("./transfers/transfers.module");
 let AppModule = class AppModule {
 };
@@ -20,11 +20,11 @@ exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            core_module_1.CoreModule,
             dock_module_1.DockModule,
             provedor_x_module_1.ProvedorXModule,
             database_module_1.DatabaseModule,
             auth_module_1.AuthModule,
+            payments_module_1.PaymentsModule,
             transfers_module_1.TransfersModule,
         ],
     })

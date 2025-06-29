@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { IPaymentProvider } from '../core/interfaces/payment-provider.interface';
-import { PayBillRequestDto } from '../core/dto/pay-bill-request.dto';
-import { PayBillResponseDto } from '../core/dto/pay-bill-response.dto';
+import { PayBillRequestDto } from '../payments/dto/pay-bill-request.dto';
+import { PayBillResponseDto } from '../payments/dto/pay-bill-response.dto';
 
 @Injectable()
 export class ProvedorXPaymentProviderService implements IPaymentProvider {
