@@ -8,6 +8,7 @@ export class DockPaymentProviderService implements IPaymentProvider {
   async payBill(data: PayBillRequestDto): Promise<PayBillResponseDto> {
     // Simulação de validação de limite
     if (data.amount > 1000000) { // R$ 10.000,00
+      throw new Error('payment_business_error');
       return {
         transactionId: `dock_${Date.now()}_error`,
         status: 'failed',

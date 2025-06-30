@@ -1,0 +1,179 @@
+{
+  "dashboard": {
+    "id": null,
+    "uid": "hubconductor-complete",
+    "title": "HubConductor POC - Dashboard Completo",
+    "tags": ["hubconductor", "fintech", "poc"],
+    "timezone": "",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Total de Pagamentos",
+        "type": "stat",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "eeqixu3o8og74a"
+            },
+            "expr": "sum(payments_total)",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {
+          "h": 6,
+          "w": 6,
+          "x": 0,
+          "y": 0
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short"
+          }
+        }
+      },
+      {
+        "id": 2,
+        "title": "Total de Transferências",
+        "type": "stat",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "eeqixu3o8og74a"
+            },
+            "expr": "sum(transfers_total)",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {
+          "h": 6,
+          "w": 6,
+          "x": 6,
+          "y": 0
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short"
+          }
+        }
+      },
+      {
+        "id": 3,
+        "title": "Total de Logins",
+        "type": "stat",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "eeqixu3o8og74a"
+            },
+            "expr": "sum(login_total)",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {
+          "h": 6,
+          "w": 6,
+          "x": 12,
+          "y": 0
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short"
+          }
+        }
+      },
+      {
+        "id": 4,
+        "title": "Taxa de Sucesso - Pagamentos",
+        "type": "gauge",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "eeqixu3o8og74a"
+            },
+            "expr": "rate(payments_total{status=\"success\"}[5m]) / rate(payments_total[5m]) * 100",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {
+          "h": 6,
+          "w": 6,
+          "x": 18,
+          "y": 0
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "min": 0,
+            "max": 100
+          }
+        }
+      },
+      {
+        "id": 5,
+        "title": "Taxa de Pagamentos por Minuto",
+        "type": "timeseries",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "eeqixu3o8og74a"
+            },
+            "expr": "rate(payments_total[5m])",
+            "legendFormat": "{{provider}} - {{status}}",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 6
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "reqps"
+          }
+        }
+      },
+      {
+        "id": 6,
+        "title": "Valor Total Transacionado",
+        "type": "timeseries",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "eeqixu3o8og74a"
+            },
+            "expr": "sum by (provider) (payments_amount_total{status=\"success\"})",
+            "legendFormat": "{{provider}}",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 6
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "currencyBRL"
+          }
+        }
+      }
+    ],
+    "time": {
+      "from": "now-24h",
+      "to": "now"
+    },
+    "refresh": "30s",
+    "schemaVersion": 37,
+    "version": 1
+  },
+  "overwrite": true
+} 

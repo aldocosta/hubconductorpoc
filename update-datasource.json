@@ -1,0 +1,18 @@
+{
+  "id": 1,
+  "uid": "eeqixu3o8og74a",
+  "orgId": 1,
+  "name": "prometheus",
+  "type": "prometheus",
+  "typeName": "Prometheus",
+  "access": "proxy",
+  "url": "http://prometheus:9090",
+  "user": "",
+  "database": "",
+  "basicAuth": false,
+  "isDefault": true,
+  "jsonData": {
+    "httpMethod": "POST"
+  },
+  "readOnly": false
+} 

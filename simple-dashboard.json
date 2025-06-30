@@ -1,0 +1,45 @@
+{
+  "dashboard": {
+    "id": null,
+    "uid": "test-hubconductor",
+    "title": "HubConductor Test Dashboard",
+    "tags": ["hubconductor", "test"],
+    "timezone": "",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Total Pagamentos",
+        "type": "stat",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "eeqixu3o8og74a"
+            },
+            "expr": "sum(payments_total)",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 0
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short"
+          }
+        }
+      }
+    ],
+    "time": {
+      "from": "now-24h",
+      "to": "now"
+    },
+    "refresh": "30s",
+    "schemaVersion": 37,
+    "version": 1
+  },
+  "overwrite": true
+} 

@@ -1,0 +1,844 @@
+{
+  "dashboard": {
+    "id": null,
+    "uid": "hubconductor-complete",
+    "title": "HubConductor POC - Dashboard Completo",
+    "tags": ["hubconductor", "fintech", "poc"],
+    "timezone": "",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Total de Pagamentos",
+        "type": "stat",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "eeqixu3o8og74a"
+            },
+            "expr": "sum(payments_total)",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {
+          "h": 6,
+          "w": 6,
+          "x": 0,
+          "y": 0
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "color": {
+              "mode": "palette-classic"
+            }
+          }
+        }
+      },
+      {
+        "id": 2,
+        "title": "Total de Transferências",
+        "type": "stat",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "eeqixu3o8og74a"
+            },
+            "expr": "sum(transfers_total)",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {
+          "h": 6,
+          "w": 6,
+          "x": 6,
+          "y": 0
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "color": {
+              "mode": "palette-classic"
+            }
+          }
+        }
+      },
+      {
+        "id": 3,
+        "title": "Total de Logins",
+        "type": "stat",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "eeqixu3o8og74a"
+            },
+            "expr": "sum(login_total)",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {
+          "h": 6,
+          "w": 6,
+          "x": 12,
+          "y": 0
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "color": {
+              "mode": "palette-classic"
+            }
+          }
+        }
+      },
+      {
+        "id": 4,
+        "title": "Taxa de Sucesso - Pagamentos",
+        "type": "gauge",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "eeqixu3o8og74a"
+            },
+            "expr": "rate(payments_total{status=\"success\"}[5m]) / rate(payments_total[5m]) * 100",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {
+          "h": 6,
+          "w": 6,
+          "x": 18,
+          "y": 0
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "min": 0,
+            "max": 100,
+            "thresholds": {
+              "steps": [
+                {
+                  "color": "red",
+                  "value": 0
+                },
+                {
+                  "color": "yellow",
+                  "value": 80
+                },
+                {
+                  "color": "green",
+                  "value": 95
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 18,
+        "title": "Taxa de Erro Global",
+        "type": "gauge",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "eeqixu3o8og74a"
+            },
+            "expr": "(rate(payments_total{status=\"error\"}[5m]) + rate(transfers_total{status=\"error\"}[5m]) + rate(login_total{status=\"error\"}[5m])) / (rate(payments_total[5m]) + rate(transfers_total[5m]) + rate(login_total[5m])) * 100",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {
+          "h": 6,
+          "w": 6,
+          "x": 0,
+          "y": 62
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "min": 0,
+            "max": 100,
+            "thresholds": {
+              "steps": [
+                {
+                  "color": "green",
+                  "value": 0
+                },
+                {
+                  "color": "yellow",
+                  "value": 5
+                },
+                {
+                  "color": "red",
+                  "value": 10
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 19,
+        "title": "Erros Totais por Módulo",
+        "type": "stat",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "eeqixu3o8og74a"
+            },
+            "expr": "sum(payments_total{status=\"error\"})",
+            "legendFormat": "Pagamentos",
+            "refId": "A"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "eeqixu3o8og74a"
+            },
+            "expr": "sum(transfers_total{status=\"error\"})",
+            "legendFormat": "Transferências",
+            "refId": "B"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "eeqixu3o8og74a"
+            },
+            "expr": "sum(login_total{status=\"error\"})",
+            "legendFormat": "Login",
+            "refId": "C"
+          }
+        ],
+        "gridPos": {
+          "h": 6,
+          "w": 6,
+          "x": 6,
+          "y": 62
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "color": {
+              "mode": "palette-classic"
+            },
+            "thresholds": {
+              "steps": [
+                {
+                  "color": "green",
+                  "value": 0
+                },
+                {
+                  "color": "yellow",
+                  "value": 5
+                },
+                {
+                  "color": "red",
+                  "value": 10
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 20,
+        "title": "Erros por Tipo - Login",
+        "type": "timeseries",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "eeqixu3o8og74a"
+            },
+            "expr": "sum by (error_type) (rate(login_total{status=\"error\"}[5m]))",
+            "legendFormat": "{{error_type}}",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {
+          "h": 6,
+          "w": 12,
+          "x": 12,
+          "y": 62
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "reqps",
+            "custom": {
+              "drawStyle": "line",
+              "lineInterpolation": "linear",
+              "lineWidth": 2
+            }
+          }
+        }
+      },
+      {
+        "id": 21,
+        "title": "Detalhes dos Tipos de Erro",
+        "type": "table",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "eeqixu3o8og74a"
+            },
+            "expr": "sum by (error_type) (payments_total{status=\"error\"})",
+            "legendFormat": "{{error_type}}",
+            "refId": "A",
+            "format": "table"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "eeqixu3o8og74a"
+            },
+            "expr": "sum by (error_type) (transfers_total{status=\"error\"})",
+            "legendFormat": "{{error_type}}",
+            "refId": "B",
+            "format": "table"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "eeqixu3o8og74a"
+            },
+            "expr": "sum by (error_type) (login_total{status=\"error\"})",
+            "legendFormat": "{{error_type}}",
+            "refId": "C",
+            "format": "table"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 68
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short"
+          }
+        }
+      },
+      {
+        "id": 22,
+        "title": "Taxa de Erro por Provedor",
+        "type": "timeseries",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "eeqixu3o8og74a"
+            },
+            "expr": "rate(payments_total{status=\"error\"}[5m]) / rate(payments_total[5m]) * 100",
+            "legendFormat": "Pagamentos - {{provider}}",
+            "refId": "A"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "eeqixu3o8og74a"
+            },
+            "expr": "rate(transfers_total{status=\"error\"}[5m]) / rate(transfers_total[5m]) * 100",
+            "legendFormat": "Transferências - {{provider}}",
+            "refId": "B"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "eeqixu3o8og74a"
+            },
+            "expr": "rate(login_total{status=\"error\"}[5m]) / rate(login_total[5m]) * 100",
+            "legendFormat": "Login - {{provider}}",
+            "refId": "C"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 68
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "custom": {
+              "drawStyle": "line",
+              "lineInterpolation": "linear",
+              "lineWidth": 2
+            },
+            "thresholds": {
+              "steps": [
+                {
+                  "color": "green",
+                  "value": 0
+                },
+                {
+                  "color": "yellow",
+                  "value": 5
+                },
+                {
+                  "color": "red",
+                  "value": 10
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 5,
+        "title": "Taxa de Pagamentos por Minuto",
+        "type": "timeseries",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "eeqixu3o8og74a"
+            },
+            "expr": "rate(payments_total[5m])",
+            "legendFormat": "{{provider}} - {{status}}",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 6
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "reqps",
+            "custom": {
+              "drawStyle": "line",
+              "lineInterpolation": "linear",
+              "lineWidth": 2,
+              "fillOpacity": 10
+            }
+          }
+        }
+      },
+      {
+        "id": 6,
+        "title": "Taxa de Transferências por Minuto",
+        "type": "timeseries",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "eeqixu3o8og74a"
+            },
+            "expr": "rate(transfers_total[5m])",
+            "legendFormat": "{{provider}} - {{status}}",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 6
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "reqps",
+            "custom": {
+              "drawStyle": "line",
+              "lineInterpolation": "linear",
+              "lineWidth": 2,
+              "fillOpacity": 10
+            }
+          }
+        }
+      },
+      {
+        "id": 7,
+        "title": "Valor Total Transacionado (R$)",
+        "type": "timeseries",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "eeqixu3o8og74a"
+            },
+            "expr": "sum by (provider) (payments_amount_total{status=\"success\"})",
+            "legendFormat": "Pagamentos - {{provider}}",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 14
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "currencyBRL",
+            "custom": {
+              "drawStyle": "line",
+              "lineInterpolation": "linear",
+              "lineWidth": 2,
+              "fillOpacity": 10
+            }
+          }
+        }
+      },
+      {
+        "id": 8,
+        "title": "Valor Total Transferido (R$)",
+        "type": "timeseries",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "eeqixu3o8og74a"
+            },
+            "expr": "sum by (provider) (transfers_amount_total{status=\"success\"})",
+            "legendFormat": "Transferências - {{provider}}",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 14
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "currencyBRL",
+            "custom": {
+              "drawStyle": "line",
+              "lineInterpolation": "linear",
+              "lineWidth": 2,
+              "fillOpacity": 10
+            }
+          }
+        }
+      },
+      {
+        "id": 9,
+        "title": "Tempo de Resposta - Pagamentos",
+        "type": "timeseries",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "eeqixu3o8og74a"
+            },
+            "expr": "histogram_quantile(0.95, rate(payment_duration_seconds_bucket[5m]))",
+            "legendFormat": "P95",
+            "refId": "A"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "eeqixu3o8og74a"
+            },
+            "expr": "histogram_quantile(0.50, rate(payment_duration_seconds_bucket[5m]))",
+            "legendFormat": "P50",
+            "refId": "B"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 8,
+          "x": 0,
+          "y": 22
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "s",
+            "custom": {
+              "drawStyle": "line",
+              "lineInterpolation": "linear",
+              "lineWidth": 2
+            }
+          }
+        }
+      },
+      {
+        "id": 10,
+        "title": "Tempo de Resposta - Transferências",
+        "type": "timeseries",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "eeqixu3o8og74a"
+            },
+            "expr": "histogram_quantile(0.95, rate(transfer_duration_seconds_bucket[5m]))",
+            "legendFormat": "P95",
+            "refId": "A"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "eeqixu3o8og74a"
+            },
+            "expr": "histogram_quantile(0.50, rate(transfer_duration_seconds_bucket[5m]))",
+            "legendFormat": "P50",
+            "refId": "B"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 8,
+          "x": 8,
+          "y": 22
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "s",
+            "custom": {
+              "drawStyle": "line",
+              "lineInterpolation": "linear",
+              "lineWidth": 2
+            }
+          }
+        }
+      },
+      {
+        "id": 11,
+        "title": "Tempo de Resposta - Login",
+        "type": "timeseries",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "eeqixu3o8og74a"
+            },
+            "expr": "histogram_quantile(0.95, rate(login_duration_seconds_bucket[5m]))",
+            "legendFormat": "P95",
+            "refId": "A"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "eeqixu3o8og74a"
+            },
+            "expr": "histogram_quantile(0.50, rate(login_duration_seconds_bucket[5m]))",
+            "legendFormat": "P50",
+            "refId": "B"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 8,
+          "x": 16,
+          "y": 22
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "s",
+            "custom": {
+              "drawStyle": "line",
+              "lineInterpolation": "linear",
+              "lineWidth": 2
+            }
+          }
+        }
+      },
+      {
+        "id": 12,
+        "title": "Erros por Tipo - Pagamentos",
+        "type": "timeseries",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "eeqixu3o8og74a"
+            },
+            "expr": "sum by (error_type) (rate(payments_total{status=\"error\"}[5m]))",
+            "legendFormat": "{{error_type}}",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 30
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "reqps",
+            "custom": {
+              "drawStyle": "line",
+              "lineInterpolation": "linear",
+              "lineWidth": 2
+            }
+          }
+        }
+      },
+      {
+        "id": 13,
+        "title": "Erros por Tipo - Transferências",
+        "type": "timeseries",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "eeqixu3o8og74a"
+            },
+            "expr": "sum by (error_type) (rate(transfers_total{status=\"error\"}[5m]))",
+            "legendFormat": "{{error_type}}",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 30
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "reqps",
+            "custom": {
+              "drawStyle": "line",
+              "lineInterpolation": "linear",
+              "lineWidth": 2
+            }
+          }
+        }
+      },
+      {
+        "id": 14,
+        "title": "Distribuição por Provedor - Pagamentos",
+        "type": "piechart",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "eeqixu3o8og74a"
+            },
+            "expr": "sum by (provider) (payments_total)",
+            "legendFormat": "{{provider}}",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 38
+        }
+      },
+      {
+        "id": 15,
+        "title": "Distribuição por Provedor - Transferências",
+        "type": "piechart",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "eeqixu3o8og74a"
+            },
+            "expr": "sum by (provider) (transfers_total)",
+            "legendFormat": "{{provider}}",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 38
+        }
+      },
+      {
+        "id": 16,
+        "title": "Heatmap - Performance Pagamentos",
+        "type": "heatmap",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "eeqixu3o8og74a"
+            },
+            "expr": "rate(payment_duration_seconds_bucket[5m])",
+            "legendFormat": "{{le}}",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 24,
+          "x": 0,
+          "y": 46
+        }
+      },
+      {
+        "id": 17,
+        "title": "Volume de Transações por Hora",
+        "type": "timeseries",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "eeqixu3o8og74a"
+            },
+            "expr": "increase(payments_total[1h])",
+            "legendFormat": "Pagamentos - {{provider}} - {{status}}",
+            "refId": "A"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "eeqixu3o8og74a"
+            },
+            "expr": "increase(transfers_total[1h])",
+            "legendFormat": "Transferências - {{provider}} - {{status}}",
+            "refId": "B"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "eeqixu3o8og74a"
+            },
+            "expr": "increase(login_total[1h])",
+            "legendFormat": "Logins - {{provider}} - {{status}}",
+            "refId": "C"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 24,
+          "x": 0,
+          "y": 54
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "custom": {
+              "drawStyle": "bars",
+              "lineInterpolation": "linear",
+              "barAlignment": 0,
+              "fillOpacity": 80,
+              "stacking": {
+                "mode": "normal",
+                "group": "A"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "time": {
+      "from": "now-24h",
+      "to": "now"
+    },
+    "refresh": "30s",
+    "schemaVersion": 37,
+    "version": 1
+  },
+  "overwrite": true
+} 
